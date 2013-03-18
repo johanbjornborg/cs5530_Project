@@ -1,8 +1,8 @@
 package cs5530;
 
-
 import java.lang.*;
 import java.sql.*;
+import java.util.Date;
 import java.io.*;
 
 public class UserInterface {
@@ -10,98 +10,392 @@ public class UserInterface {
 	/**
 	 * @param args
 	 */
-	public static void displayMenu()
-	{
-		 System.out.println("        Video Store Management System     ");
-    	 System.out.println("1. search a course by cname and dname:");
-    	 System.out.println("2. enter your onw query:");
-    	 System.out.println("3. exit:");
-    	 System.out.println("pleasse enter your choice:");
+	public static void displayLoginMenu() {
+		System.out.println("        Video Store Management System     ");
+		System.out.println("1. Register:");
+		System.out.println("2. Login:");
+		System.out.println("3. Logout/exit:");
+	}
+
+	public static void displayMenu() {
+		System.out.println("        Main Menu		");
+		System.out.println("1. Order Movie(s):");
+		System.out.println("2. See Order History:");
+		System.out.println("3. View/Leave Feedback:");
+		System.out.println("4. User Relationships:");
+		System.out.println("5. User Reports:");
+		System.out.println("6. Logout/exit:");
+
+	}
+
+	public static void main(String[] args) {
+
+		Connector con = null;
+		String choice;
+		String cname;
+		String dname;
+		String fname, login, pw, pwConf, address, phone, card_no;
+		String sql = null;
+		int c = 0;
+		try {
+			// remember to replace the password
+			con = new Connector();
+
+			// Variables.setConnection();
+			System.out.println("Database connection established");
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+			while (true) {
+				displayLoginMenu();
+				User user = new User(con, con.stmt);
+				int retryCount = 0;
+				while ((choice = in.readLine()) == null && choice.length() == 0)
+					;
+				try {
+					c = Integer.parseInt(choice);
+				} catch (Exception e) {
+
+					continue;
+				}
+				if (c < 1 | c > 4)
+					continue;
+				if (c == 1) {
+
+					System.out.println("Register New User:");
+
+					System.out.println("please enter a login:");
+					while ((login = in.readLine()) == null && login.length() == 0)
+						;
+					System.out.println("please enter a Password:");
+					while ((pw = in.readLine()) == null && pw.length() == 0)
+						;
+					System.out.println("please enter your full name:");
+					while ((fname = in.readLine()) == null && fname.length() == 0)
+						;
+					System.out.println("please enter your address:");
+					while ((address = in.readLine()) == null && address.length() == 0)
+						;
+					System.out.println("please enter a phone:");
+					while ((phone = in.readLine()) == null && phone.length() == 0)
+						;
+
+					System.out.println(user.registerNewUser(fname, login, pw, address, phone));
+				} else if (c == 2) {
+
+					String uname;
+					String pword;
+					// Login here.
+					while (retryCount < 3) {
+						System.out.println("Username:");
+						while ((uname = in.readLine()) == null && uname.length() == 0)
+							;
+						System.out.println("Password:");
+						while ((pword = in.readLine()) == null && pword.length() == 0)
+							;
+						if (user.loginUser(uname, pword)) {
+							Variables.setLogin(user.login);
+							userMenu(con, con.stmt, user);
+							break;
+						} else {
+							retryCount++;
+						}
+					}
+
+				} else {
+					System.out.println("Remember to pay us!");
+					// con.stmt.close();
+
+					break;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Cannot connect to database server");
+		} finally {
+			if (Variables.getConnection() != null) {
+				try {
+					Variables.getConnection().close();
+					System.out.println("Database connection terminated");
+				}
+
+				catch (Exception e) { /* ignore close errors */
+				}
+			}
+		}
 	}
 	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.println("Example for cs5530");
-		Connector con=null;
+	/**
+	 * 
+	 * @param con
+	 * @param stmt
+	 * @param user
+	 */
+	public static void userMenu(Connector con, Statement stmt, User user) {
 		String choice;
-        String cname;
-        String dname;
-        String sql=null;
-        int c=0;
-         try
-		 {
-			//remember to replace the password
-			 	 con= new Connector();
-	             System.out.println ("Database connection established");
-	         
-	             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-	             
-	             while(true)
-	             {
-	            	 displayMenu();
-	            	 while ((choice = in.readLine()) == null && choice.length() == 0);
-	            	 try{
-	            		 c = Integer.parseInt(choice);
-	            	 }catch (Exception e)
-	            	 {
-	            		 
-	            		 continue;
-	            	 }
-	            	 if (c<1 | c>3)
-	            		 continue;
-	            	 if (c==1)
-	            	 {
-	            		 System.out.println("please enter a cname:");
-	            		 while ((cname = in.readLine()) == null && cname.length() == 0);
-	            		 System.out.println("please enter a dname:");
-	            		 while ((dname = in.readLine()) == null && dname.length() == 0);
-	            		 Videos course=new Videos();
-	            		 System.out.println(course.getVideos(cname, dname, con.stmt));
-	            	 }
-	            	 else if (c==2)
-	            	 {	 
-	            		 System.out.println("please enter your query below:");
-	            		 while ((sql = in.readLine()) == null && sql.length() == 0)
-	            			 System.out.println(sql);
-	            		 ResultSet rs=con.stmt.executeQuery(sql);
-	            		 ResultSetMetaData rsmd = rs.getMetaData();
-	            		 int numCols = rsmd.getColumnCount();
-	            		 while (rs.next())
-	            		 {
-	            			 //System.out.print("cname:");
-	            			 for (int i=1; i<=numCols;i++)
-	            				 System.out.print(rs.getString(i)+"  ");
-	            			 System.out.println("");
-	            		 }
-	            		 System.out.println(" ");
-	            		 rs.close();
-	            	 }
-	            	 else
-	            	 {   
-	            		 System.out.println("Remeber to pay us!");
-	            		 con.stmt.close(); 
-	        
-	            		 break;
-	            	 }
-	             }
-		 }
-         catch (Exception e)
-         {
-        	 e.printStackTrace();
-        	 System.err.println ("Cannot connect to database server");
-         }
-         finally
-         {
-        	 if (con != null)
-        	 {
-        		 try
-        		 {
-        			 con.closeConnection();
-        			 System.out.println ("Database connection terminated");
-        		 }
-        	 
-        		 catch (Exception e) { /* ignore close errors */ }
-        	 }	 
-         }
+		int c = 0;
+		try {
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+			while (true) {
+				System.out.println(String.format("\tHello, %s!\t", user.firstName));
+				System.out.println("1. Order Movie(s):");
+				System.out.println("2. See Order History:");
+				System.out.println("3. View/Leave Feedback:");
+				System.out.println("4. User Relationships:");
+				System.out.println("5. User Reports:");
+				System.out.println("--- EMPLOYEE USE ONLY ---");
+				System.out.println("6. New Stock:");
+				System.out.println("7. Statistics:");
+				System.out.println("8. User Awards:");
+				System.out.println("9. Logout/exit:");
+				System.out.println("Note: Typing 'exit' at any time will bring you to back to the parent menu.");
+				while ((choice = in.readLine()) == null && choice.length() == 0)
+					;
+				try {
+					c = Integer.parseInt(choice);
+				} catch (Exception e) {
+
+					continue;
+				}
+				if (c < 1 | c > 6)
+					continue;
+				if (c == 1) {
+
+					String input;
+					int quantity;
+
+					// Order a movie
+					while (true) {
+						QueryOrder order = new QueryOrder(con, stmt, user);
+						Date date = new Date();
+						int i;
+						int isbn = -1;
+						System.out.println("1. By ISBN\n2. By Title\n3. Browse Selection\n4. Back to Main Menu");
+						while ((choice = in.readLine()) == null && choice.length() == 0)
+							;
+						try {
+							if (choice.equals("exit"))
+								break;
+
+							i = Integer.parseInt(choice);
+							if (i < 1 || i > 3) {
+								continue;
+							}
+						} catch (Exception e) {
+							continue;
+						}
+						if (i == 1) {
+							while (true) {
+								System.out.println("Enter the numeric ISBN:");
+								if (isbn == -1) {
+/**
+ * ORDER BY ISBN
+ */
+									while ((input = in.readLine()) == null && input.length() == 0)
+										;
+									try {
+										if (input.equals("exit")) {
+											break;
+										}
+										isbn = Integer.parseInt(input);
+									} catch (Exception e) {
+										System.out.println("Invalid ISBN. Ensure it is entirely numeric.");
+										continue;
+									}
+								}
+								System.out.println("Quantity:");
+								while ((input = in.readLine()) == null && input.length() == 0)
+									;
+								try {
+									if (input.equals("exit")) {
+										break;
+									}
+									quantity = Integer.parseInt(input);
+									if (quantity < 1) {
+										System.out.println("Please enter a nonzero, positive integer.");
+										continue;
+									}
+									order.orderVideos(Integer.toString(isbn), "", quantity, date);
+								} catch (Exception e) {
+									System.out.println("Invalid Quantity. Ensure it is entirely numeric.");
+									continue;
+								}
+							}
+						} else if (i == 2) {
+/**
+ * ORDER BY TITLE
+ */
+							while (true) {
+								String title = "";
+								System.out.println("Enter the Movie Title:");
+								if (title == "") {
+									while ((input = in.readLine()) == null && input.length() == 0)
+										;
+									try {
+										if (input.equals("exit")) {
+											break;
+										} else {
+											title = input;
+										}
+									} catch (Exception e) {
+										continue;
+									}
+								}
+								System.out.println("Quantity:");
+								while ((input = in.readLine()) == null && input.length() == 0)
+									;
+								try {
+									if (input.equals("exit")) {
+										break;
+									}
+									quantity = Integer.parseInt(input);
+									if (quantity < 1) {
+										System.out.println("Please enter a nonzero, positive integer.");
+										continue;
+									}
+									order.orderVideos("", title, quantity, date);
+								} catch (Exception e) {
+									System.out.println("Invalid Quantity. Ensure it is entirely numeric.");
+									continue;
+								}
+							}
+						} else {
+							break;
+						}
+					}
+				} else if (c == 2) {
+/**
+ * ORDER HISTORIES
+ */
+					System.out.println("Complete Order History for " + user.fullName + ":");
+
+				} else if (c == 3) {
+/**
+ * FEEDBACKS
+ */
+					System.out.println("View/Leave Feedback for movie(s)");
+					break;
+				} else if (c == 4) {
+/**
+ * USER RELATIONSHIPS
+ */
+					System.out.println("User Relationships");
+					break;
+				} else if (c == 5) {
+/**
+ * USER REPORTS
+ */
+					System.out.println("Full User Report for " + user.fullName + ":");
+					user.getUserRecord();
+					break;
+				} else if (c == 6) {
+					System.out.println("1. New Movie\n2. Additional Copies of Existing Movie\n 3. Back to Main Menu");
+
+					QueryVideos qv = new QueryVideos(con, stmt);
+					int i;
+					int isbn = -1;
+					int quantity;
+					String input;
+
+					while ((choice = in.readLine()) == null && choice.length() == 0)
+						;
+					try {
+						if (choice.equals("exit"))
+							break;
+
+						i = Integer.parseInt(choice);
+						if (i < 1 || i > 3) {
+							continue;
+						}
+					} catch (Exception e) {
+						continue;
+					}
+					if (i == 1) {
+/**
+ * NEW MOVIE HERE
+ */
+						String[] attrs = new String[9];
+						System.out.println("Enter each of the following, one line per value:");
+						System.out.println("ISBN, Movie Title, year, genre, cast, rating, format, price, quantity in stock:");
+						boolean exit = false;
+						for (int j = 0; j < 9; j++) {
+
+							while ((input = in.readLine()) == null && input.length() == 0)
+								;
+							if (input.equals("exit")) {
+								exit = true;
+								break;
+							}
+							attrs[j] = input;
+						}
+						if (exit) {
+							break;
+						} else {
+							qv.newMovie(attrs);
+						}
+
+					} else if (i == 2) {
+/**
+ * UPDATE MOVIE
+ */
+						while (true) {
+							isbn = -1;
+							System.out.println("ISBN to update:");
+							if (isbn == -1) {
+								while ((input = in.readLine()) == null && input.length() == 0)
+									;
+								try {
+									if (input.equals("exit")) {
+										break;
+									} else {
+										isbn = Integer.parseInt(input);
+									}
+								} catch (Exception e) {
+									continue;
+								}
+							}
+
+							System.out.println("Quantity:");
+							while ((input = in.readLine()) == null && input.length() == 0)
+								;
+							try {
+								if (input.equals("exit")) {
+									break;
+								}
+								quantity = Integer.parseInt(input);
+								if (quantity < 1) {
+									System.out.println("Please enter a nonzero, positive integer.");
+									continue;
+								}
+								qv.updateQuantity(isbn, quantity);
+							} catch (Exception e) {
+								System.out.println("Invalid Quantity. Ensure it is entirely numeric.");
+								continue;
+							}
+						}
+					} else {
+						break;
+					}
+				} else {
+					System.out.println("Function TBD.");
+					break;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Cannot connect to database server");
+		} finally {
+			if (Variables.getConnection() != null) {
+				try {
+					Variables.getConnection().close();
+					System.out.println("Database connection terminated");
+				}
+
+				catch (Exception e) { /* ignore close errors */
+				}
+			}
+		}
 	}
 }
