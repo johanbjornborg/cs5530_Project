@@ -124,7 +124,7 @@ public class UserInterface {
 			}
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param con
@@ -190,9 +190,9 @@ public class UserInterface {
 							while (true) {
 								System.out.println("Enter the numeric ISBN:");
 								if (isbn == -1) {
-/**
- * ORDER BY ISBN
- */
+									/**
+									 * ORDER BY ISBN
+									 */
 									while ((input = in.readLine()) == null && input.length() == 0)
 										;
 									try {
@@ -224,9 +224,9 @@ public class UserInterface {
 								}
 							}
 						} else if (i == 2) {
-/**
- * ORDER BY TITLE
- */
+							/**
+							 * ORDER BY TITLE
+							 */
 							while (true) {
 								String title = "";
 								System.out.println("Enter the Movie Title:");
@@ -266,27 +266,114 @@ public class UserInterface {
 						}
 					}
 				} else if (c == 2) {
-/**
- * ORDER HISTORIES
- */
+					/**
+					 * ORDER HISTORIES
+					 */
 					System.out.println("Complete Order History for " + user.fullName + ":");
 
 				} else if (c == 3) {
-/**
- * FEEDBACKS
- */
+					/**
+					 * FEEDBACKS
+					 */
 					System.out.println("View/Leave Feedback for movie(s)");
 					break;
 				} else if (c == 4) {
-/**
- * USER RELATIONSHIPS
- */
+					/**
+					 * USER RELATIONSHIPS
+					 */
 					System.out.println("User Relationships");
+					String input;
+					int isbn = -1;
+					int i;
+					while (true) {
+						System.out.println("Enter the numeric ISBN:");
+						if (isbn == -1) {
+
+							while ((input = in.readLine()) == null && input.length() == 0)
+								;
+							try {
+								if (input.equals("exit")) {
+									break;
+								}
+								isbn = Integer.parseInt(input);
+							} catch (Exception e) {
+								System.out.println("Invalid ISBN. Ensure it is entirely numeric.");
+								continue;
+							}
+						}
+						System.out.println("1. View Feedback\n2. Leave Feedback\n 3. Back to Main Menu");
+						while ((choice = in.readLine()) == null && choice.length() == 0)
+							;
+						try {
+							if (choice.equals("exit"))
+								break;
+
+							i = Integer.parseInt(choice);
+							if (i < 1 || i > 3) {
+								continue;
+							}
+						} catch (Exception e) {
+							continue;
+						}
+						if (i == 1) {
+							/**
+							 * VIEW ALL FEEDBACK
+							 */
+							String[] attrs = new String[9];
+							System.out.println("View All Feedback for Movie: MOVIETITLE");
+							boolean exit = false;
+							// GET ALL FEEDBACK HERE.
+						} else if (i == 2) {
+							/**
+							 * LEAVE NEW FEEDBACK
+							 */
+							System.out.println("Leave Feedback:");
+							while (true) {
+								int score = -1;
+								System.out.println("Score (1-10):");
+								if (score == -1) {
+									while ((input = in.readLine()) == null && input.length() == 0)
+										;
+									try {
+										if (input.equals("exit")) {
+											break;
+										} else {
+											score = Integer.parseInt(input);
+											if(score < 1 || score > 10){
+												score = -1;
+												System.out.println("Ensure Score is between 1 and 10.");
+												continue;
+											}
+										}
+									} catch (Exception e) {
+										score = -1;
+										System.out.println("Ensure Score is between 1 and 10.");
+										continue;
+									}
+								}
+
+								System.out.println("Detailed feedback. Enter when done.\n>");
+								while ((input = in.readLine()) == null && input.length() == 0)
+									;
+								try {
+									if (input.equals("exit")) {
+										break;
+									}
+									// ADD NEW FEEDBACK TO DATABASE.
+								} catch (Exception e) {
+									System.out.println("Invalid Quantity. Ensure it is entirely numeric.");
+									continue;
+								}
+							}
+						} else {
+							break;
+						}
+					}
 					break;
 				} else if (c == 5) {
-/**
- * USER REPORTS
- */
+					/**
+					 * USER REPORTS
+					 */
 					System.out.println("Full User Report for " + user.fullName + ":");
 					user.getUserRecord();
 					break;
@@ -313,9 +400,9 @@ public class UserInterface {
 						continue;
 					}
 					if (i == 1) {
-/**
- * NEW MOVIE HERE
- */
+						/**
+						 * NEW MOVIE HERE
+						 */
 						String[] attrs = new String[9];
 						System.out.println("Enter each of the following, one line per value:");
 						System.out.println("ISBN, Movie Title, year, genre, cast, rating, format, price, quantity in stock:");
@@ -337,9 +424,9 @@ public class UserInterface {
 						}
 
 					} else if (i == 2) {
-/**
- * UPDATE MOVIE
- */
+						/**
+						 * UPDATE MOVIE
+						 */
 						while (true) {
 							isbn = -1;
 							System.out.println("ISBN to update:");
