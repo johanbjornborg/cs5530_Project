@@ -78,27 +78,28 @@ public class QueryVideos {
 	 */
 	public String browseTitles(HashMap<String, ArrayList<String>> params, String sortBy) throws SQLException {
 
+		StringBuilder sb = new StringBuilder();
 		ResultSet results;
 		String resultStr = "";
+		String separator = " OR ";
 		String query = "SELECT * FROM VideoData v WHERE ";
 		for (String s : params.get("title")) {
-			query += String.format("v.title LIKE '%s' OR ", s);
+			sb.append(separator).append(String.format("v.title LIKE '%s'", s));
 		}
 		for (String s : params.get("cast")) {
-			query += String.format("v.cast_and_crew LIKE '%s' OR ", s);
+			sb.append(separator).append(String.format("v.cast_and_crew LIKE '%s'", s));
 		}
 		for (String s : params.get("director")) {
-			query += String.format("v.cast_and_crew LIKE '%s' OR ", s);
+			sb.append(separator).append(String.format("v.cast_and_crew LIKE '%s'", s));
 		}
 		for (String s : params.get("rating")) {
-			query += String.format("v.rating LIKE '%s' OR ", s);
+			sb.append(separator).append(String.format("v.rating LIKE '%s'", s));
 		}
 		for (String s : params.get("genre")) {
-			query += String.format("v.genre LIKE '%s' OR ", s);
+			sb.append(separator).append(String.format("v.genre LIKE '%s'", s));
 		}
 		// No idea if this works.
 
-		query.replace(query.substring(query.lastIndexOf("OR")), "");
 		// TODO: Implement keyword searches.
 		// for (String s : params.get("keyword")) {
 		// query += String.format("v.title LIKE '%s'", s);
