@@ -9,6 +9,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public class QueryOrder {
 
 	private User user;
+	@SuppressWarnings("unused")
 	private Connector con;
 	private Statement stmt;
 
@@ -20,10 +21,7 @@ public class QueryOrder {
 
 	private ResultSet checkAvailability(String isbn, String title, int quantity) throws Exception {
 		String query = "";
-		String resultstr = "";
 		ResultSet results;
-		int available_qty, total_qty;
-		double price;
 
 		if (!isbn.equals("")) {
 			query = String.format("SELECT * FROM VideoData v natural join " + "Quantities q where v.isbn = '%s'" + " having q.available_qty > %d", isbn, quantity);
@@ -60,10 +58,7 @@ public class QueryOrder {
 		System.out.println("Order Movie: ");
 		java.sql.Date sqlDate = new java.sql.Date(rentDate.getTime());
 		String query = "";
-		String resultstr = "";
 		String result = "Failed to create Order";
-		int available_qty, total_qty;
-		double price;
 		// First check if movie exists, and it is available.
 		ResultSet results = checkAvailability(isbn, title, quantity);
 		// If so, order the movie(s)
@@ -74,7 +69,8 @@ public class QueryOrder {
 		while (results.next()) {
 			isbn = results.getString("isbn");
 		}
-		query = String.format("INSERT INTO OrderHistory VALUES ('%s', '%s', '%s', '%s', '%s')", Variables.getLogin(), isbn, sqlDate, sqlDate, "Test rental stuff. Nothing to see here.");
+		query = String.format("INSERT INTO OrderHistory VALUES ('%s', '%s', '%s', '%s', '%s')", Variables.getLogin(), isbn, sqlDate, sqlDate,
+				"Test rental stuff. Nothing to see here.");
 		try {
 			// if (Variables.getStatement().executeUpdate(query) == 1) {
 

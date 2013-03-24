@@ -2,7 +2,9 @@ package cs5530;
 
 import java.lang.*;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.io.*;
 
 public class UserInterface {
@@ -113,9 +115,9 @@ public class UserInterface {
 			e.printStackTrace();
 			System.err.println("Cannot connect to database server");
 		} finally {
-			if (Variables.getConnection() != null) {
+			if (con != null) {
 				try {
-					Variables.getConnection().close();
+					con.closeConnection();
 					System.out.println("Database connection terminated");
 				}
 
@@ -261,6 +263,99 @@ public class UserInterface {
 									continue;
 								}
 							}
+						} else if (i == 3) {
+							/**
+							 * BROWSE TITLES
+							 */
+							QueryVideos qv = new QueryVideos(con, stmt);
+							HashMap<String, ArrayList<String>> params = new HashMap<String, ArrayList<String>>();
+							params.put("title", new ArrayList<String>());
+							params.put("cast", new ArrayList<String>());
+							params.put("director", new ArrayList<String>());
+							params.put("rating", new ArrayList<String>());
+							params.put("genre", new ArrayList<String>());
+							params.put("keyword", new ArrayList<String>());
+							
+							int key = -1;
+							String val = "";
+							// SELECT TITLE, ACTOR, RATING, GENRE, ETC.
+							System.out.println("Search Parameters. Enter as many as desired.");
+							while (true) {
+								System.out.println("1: Title\n2: Actor/Actress\n3: Director \n4: Rating \n5: Genre \n6:Keywords \n7: Finish and search");
+								while ((input = in.readLine()) == null && input.length() == 0)
+									;
+								try {
+									if (input.equals("exit")) {
+										break;
+									} else
+										key = Integer.parseInt(input);
+								} catch (Exception e) {
+									System.out.println("Invalid ISBN. Ensure it is entirely numeric.");
+									continue;
+								}
+								System.out.println("Enter Parameter:");
+								while ((input = in.readLine()) == null && input.length() == 0)
+									;
+								try {
+									if (input.equals("exit")) {
+										break;
+									} else
+										val = input;
+								} catch (Exception e) {
+									System.out.println("Invalid ISBN. Ensure it is entirely numeric.");
+									continue;
+								}
+								switch (key) {
+								case 1:
+									params.get("title").add(val);
+									break;
+								case 2:
+									params.get("cast").add(val);
+									break;
+								case 3:
+									params.get("director").add(val);
+									break;
+								case 4:
+									params.get("rating").add(val);
+									break;
+								case 5:
+									params.get("genre").add(val);
+									break;
+								case 6:
+									params.get("keyword").add(val);
+									break;
+								case 7:
+									int sort;
+									System.out.println("Sort By\n1: Year\n2: Avg Feedback Rating\n3: Avg Feedback from Trusted");
+									while ((input = in.readLine()) == null && input.length() == 0)
+										;
+									try {
+										if (input.equals("exit")) {
+											break;
+										} else
+											sort = Integer.parseInt(input);
+										switch(sort){
+										case 1:
+											qv.browseTitles(params, "release_year");
+											break;
+										case 2:
+											qv.browseTitles(params, "usefulness");
+											break;
+										case 3:
+											qv.browseTitles(params, "trusted");
+											break;
+										default:
+											break;
+										}
+									} catch (Exception e) {
+										System.out.println("Invalid ISBN. Ensure it is entirely numeric.");
+										continue;
+									}
+									break;
+								}
+
+							}
+							break;
 						} else {
 							break;
 						}
@@ -269,20 +364,19 @@ public class UserInterface {
 					/**
 					 * ORDER HISTORIES
 					 */
+					QueryOrder order = new QueryOrder(con, stmt, user);
+					String results;
 					System.out.println("Complete Order History for " + user.fullName + ":");
-
+					results = order.getOrderHistory();
+					System.out.println(results);
 				} else if (c == 3) {
 					/**
 					 * FEEDBACKS
 					 */
+					QueryFeedback feedback = new QueryFeedback(con, stmt, user);
 					System.out.println("View/Leave Feedback for movie(s)");
-					break;
-				} else if (c == 4) {
-					/**
-					 * USER RELATIONSHIPS
-					 */
-					System.out.println("User Relationships");
 					String input;
+					String comments = "";
 					int isbn = -1;
 					int i;
 					while (true) {
@@ -298,6 +392,7 @@ public class UserInterface {
 								isbn = Integer.parseInt(input);
 							} catch (Exception e) {
 								System.out.println("Invalid ISBN. Ensure it is entirely numeric.");
+								isbn = -1;
 								continue;
 							}
 						}
@@ -322,7 +417,8 @@ public class UserInterface {
 							String[] attrs = new String[9];
 							System.out.println("View All Feedback for Movie: MOVIETITLE");
 							boolean exit = false;
-							// GET ALL FEEDBACK HERE.
+							feedback.getFeedback(isbn);
+
 						} else if (i == 2) {
 							/**
 							 * LEAVE NEW FEEDBACK
@@ -330,8 +426,8 @@ public class UserInterface {
 							System.out.println("Leave Feedback:");
 							while (true) {
 								int score = -1;
-								System.out.println("Score (1-10):");
 								if (score == -1) {
+									System.out.println("Score (1-10):");
 									while ((input = in.readLine()) == null && input.length() == 0)
 										;
 									try {
@@ -339,7 +435,7 @@ public class UserInterface {
 											break;
 										} else {
 											score = Integer.parseInt(input);
-											if(score < 1 || score > 10){
+											if (score < 1 || score > 10) {
 												score = -1;
 												System.out.println("Ensure Score is between 1 and 10.");
 												continue;
@@ -358,18 +454,28 @@ public class UserInterface {
 								try {
 									if (input.equals("exit")) {
 										break;
+									} else {
+										comments = input;
 									}
 									// ADD NEW FEEDBACK TO DATABASE.
 								} catch (Exception e) {
 									System.out.println("Invalid Quantity. Ensure it is entirely numeric.");
 									continue;
 								}
+								feedback.leaveNewFeedback(isbn, comments, score);
 							}
 						} else {
 							break;
 						}
 					}
 					break;
+				} else if (c == 4) {
+					/**
+					 * USER RELATIONSHIPS
+					 */
+					System.out.println("User Relationships");
+					System.out.println("1. View\n2. Additional Copies of Existing Movie\n 3. Back to Main Menu");
+
 				} else if (c == 5) {
 					/**
 					 * USER REPORTS

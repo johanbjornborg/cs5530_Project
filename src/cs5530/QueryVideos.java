@@ -1,6 +1,8 @@
 package cs5530;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -60,11 +62,11 @@ public class QueryVideos {
 			System.out.println("Successfully updated quantiy!");
 			result = "<b> SUCCESS! ";
 		} catch (SQLException e) {
-			System.err.println("Videos:newMovie: Unable to execute query:" + query + "\n");
+			System.err.println("Videos:updateQuantity: Unable to execute query:" + query + "\n");
 			System.err.println(e.getMessage());
 			throw (e);
 		}
-		System.out.println("Video:updateteMovie query=" + query + "\n");
+		System.out.println("Video:updateQuantity query=" + query + "\n");
 		return result;
 	}
 
@@ -72,11 +74,50 @@ public class QueryVideos {
 	 * 
 	 * @param attrs
 	 * @return
+	 * @throws SQLException
 	 */
-	public String browseTitles(String... attrs) {
+	public String browseTitles(HashMap<String, ArrayList<String>> params, String sortBy) throws SQLException {
 
-		String sort;
-		throw new NotImplementedException();
+		ResultSet results;
+		String resultStr = "";
+		String query = "SELECT * FROM VideoData v WHERE ";
+		for (String s : params.get("title")) {
+			query += String.format("v.title LIKE '%s' OR ", s);
+		}
+		for (String s : params.get("cast")) {
+			query += String.format("v.cast_and_crew LIKE '%s' OR ", s);
+		}
+		for (String s : params.get("director")) {
+			query += String.format("v.cast_and_crew LIKE '%s' OR ", s);
+		}
+		for (String s : params.get("rating")) {
+			query += String.format("v.rating LIKE '%s' OR ", s);
+		}
+		for (String s : params.get("genre")) {
+			query += String.format("v.genre LIKE '%s' OR ", s);
+		}
+		// No idea if this works.
+
+		query.replace(query.substring(query.lastIndexOf("OR")), "");
+		// TODO: Implement keyword searches.
+		// for (String s : params.get("keyword")) {
+		// query += String.format("v.title LIKE '%s'", s);
+		// }
+		try {
+
+			results = stmt.executeQuery(query);
+			while (results.next()) {
+				resultStr += "<b>" + results.getString("isbn") + "</b><br>Title: " + results.getString("title") + " Release Year: " + results.getString("release_year")
+						+ " <br>Formats: &nbsp'<i>" + results.getString("format") + "'</i><BR>\n" + " <br>Price: &nbsp'<i>" + results.getString("price") + "'</i><BR>\n"
+						+ " <br>Genre: &nbsp'<i>" + results.getString("genre") + "'</i><BR>\n";
+			}
+
+		} catch (SQLException e) {
+			System.err.println("Videos:browseMovies: Unable to execute query:" + query + "\n");
+			System.err.println(e.getMessage());
+			throw (e);
+		}
+		return resultStr;
+
 	}
-
 }

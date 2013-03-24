@@ -53,7 +53,7 @@ public class Connector {
 		final int MAX_POOL_SIZE = 5;
 
 		// Check if the pool size
-		if (connectionPool.size() < 5) {
+		if (connectionPool.size() < MAX_POOL_SIZE) {
 			return false;
 		}
 
