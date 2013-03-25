@@ -131,7 +131,7 @@ public class QueryFeedback {
 		System.out.println("Leave Feedback: ");
 		String query = "";
 		String result = "Failed to Leave Feedback";
-		query = String.format("INSERT INTO Feedback VALUES ('%s', '%s', '%s', '%s')", user.login, isbn, score, comments);
+		query = String.format("INSERT INTO Feedback VALUES (id, '%s', '%s', '%s', '%s')", user.login, isbn, score, comments);
 		try {
 			stmt.executeUpdate(query);
 			result = "Successfully Left Feedback for ISBN " + isbn + "!";

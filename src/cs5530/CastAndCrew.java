@@ -27,20 +27,23 @@ public class CastAndCrew {
 		}
 		return resultstr;
 	}
-	
+
 	/**
 	 * Two degrees of separation implementation goes here.
+	 * 
 	 * @return
 	 */
-	public String relatedContent(){
+	public String twoDegrees(String actorA, String actorB) {
+		String query = String
+				.format("SELECT * From CastAndCrew Z WHERE Z.id IN (SELECT X.id AS user FROM CastLookup AS X INNER JOIN CastLookup AS Y ON X.id = Y.id GROUP BY user) AND Z.full_name = '%s' OR Z.full_name = '%s'");
 		throw new NotImplementedException();
 	}
-	
-	public String newCastMember(String name, int[] movies){
+
+	public String newCastMember(String name, int[] movies) {
 		throw new NotImplementedException();
 	}
-	
-	public String newCrewMember(String name, int[] movies){
+
+	public String newCrewMember(String name, int[] movies) {
 		throw new NotImplementedException();
 	}
 }

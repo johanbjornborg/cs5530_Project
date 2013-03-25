@@ -82,30 +82,30 @@ public class QueryVideos {
 		ResultSet results;
 		String resultStr = "";
 		String separator = " OR ";
-		String query = "SELECT * FROM VideoData v WHERE ";
+		String query = "";
+		sb.append("SELECT * FROM VideoData v WHERE ");
 		for (String s : params.get("title")) {
-			sb.append(separator).append(String.format("v.title LIKE '%s'", s));
+			sb.append(String.format("v.title LIKE '%%%s%%'", s)).append(separator);
 		}
 		for (String s : params.get("cast")) {
-			sb.append(separator).append(String.format("v.cast_and_crew LIKE '%s'", s));
+			sb.append(String.format("v.cast_and_crew LIKE '%%%s%%'", s)).append(separator);
 		}
 		for (String s : params.get("director")) {
-			sb.append(separator).append(String.format("v.cast_and_crew LIKE '%s'", s));
+			sb.append(String.format("v.cast_and_crew LIKE '%%%s%%'", s)).append(separator);
 		}
 		for (String s : params.get("rating")) {
-			sb.append(separator).append(String.format("v.rating LIKE '%s'", s));
+			sb.append(String.format("v.rating LIKE '%%%s%%'", s)).append(separator);
 		}
 		for (String s : params.get("genre")) {
-			sb.append(separator).append(String.format("v.genre LIKE '%s'", s));
+			sb.append(String.format("v.genre LIKE '%%%s%%'", s)).append(separator);
 		}
-		// No idea if this works.
-
+		sb.delete(sb.lastIndexOf(separator), sb.length() - 1);
 		// TODO: Implement keyword searches.
 		// for (String s : params.get("keyword")) {
 		// query += String.format("v.title LIKE '%s'", s);
 		// }
 		try {
-
+			query = sb.toString();
 			results = stmt.executeQuery(query);
 			while (results.next()) {
 				resultStr += "<b>" + results.getString("isbn") + "</b><br>Title: " + results.getString("title") + " Release Year: " + results.getString("release_year")

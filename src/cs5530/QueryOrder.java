@@ -97,7 +97,7 @@ public class QueryOrder {
 		results = stmt.executeQuery(query);
 
 		while (results.next()) {
-			resultstr += "<b>" + results.getString("isbn") + "</b><br>" + results.getString("") + " Rent Date: " + results.getString("Rent_date")
+			resultstr += "<b>" + results.getString("isbn") + "</b><br> Rent Date: " + results.getString("Rent_date")
 					+ " <br>Additional Info: &nbsp'<i>" + results.getString("Additional_info") + "'</i><BR>\n";
 		}
 		return resultstr;

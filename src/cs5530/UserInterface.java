@@ -184,6 +184,8 @@ public class UserInterface {
 							i = Integer.parseInt(choice);
 							if (i < 1 || i > 3) {
 								continue;
+							} else if (i == 4) {
+								break;
 							}
 						} catch (Exception e) {
 							continue;
@@ -275,7 +277,7 @@ public class UserInterface {
 							params.put("rating", new ArrayList<String>());
 							params.put("genre", new ArrayList<String>());
 							params.put("keyword", new ArrayList<String>());
-							
+
 							int key = -1;
 							String val = "";
 							// SELECT TITLE, ACTOR, RATING, GENRE, ETC.
@@ -334,15 +336,15 @@ public class UserInterface {
 											break;
 										} else
 											sort = Integer.parseInt(input);
-										switch(sort){
+										switch (sort) {
 										case 1:
-											qv.browseTitles(params, "release_year");
+											System.out.println(qv.browseTitles(params, "release_year"));
 											break;
 										case 2:
-											qv.browseTitles(params, "usefulness");
+											System.out.println(qv.browseTitles(params, "usefulness"));
 											break;
 										case 3:
-											qv.browseTitles(params, "trusted");
+											System.out.println(qv.browseTitles(params, "trusted"));
 											break;
 										default:
 											break;
@@ -355,9 +357,9 @@ public class UserInterface {
 								}
 
 							}
-							break;
+
 						} else {
-							break;
+
 						}
 					}
 				} else if (c == 2) {
@@ -457,12 +459,13 @@ public class UserInterface {
 									} else {
 										comments = input;
 									}
-									// ADD NEW FEEDBACK TO DATABASE.
+
 								} catch (Exception e) {
 									System.out.println("Invalid Quantity. Ensure it is entirely numeric.");
 									continue;
 								}
 								feedback.leaveNewFeedback(isbn, comments, score);
+								break;
 							}
 						} else {
 							break;
@@ -481,7 +484,7 @@ public class UserInterface {
 					 * USER REPORTS
 					 */
 					System.out.println("Full User Report for " + user.fullName + ":");
-					user.getUserRecord();
+					System.out.println(user.getUserRecord());
 					break;
 				} else if (c == 6) {
 					System.out.println("1. New Movie\n2. Additional Copies of Existing Movie\n 3. Back to Main Menu");

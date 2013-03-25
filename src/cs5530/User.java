@@ -130,7 +130,7 @@ public class User {
 		// Get all feedback rated
 		// select all feedback where ... crap.
 		resultStr += "<b>Feedback rated by User:</b><br>";
-		query = String.format("SELECT * FROM FeedbackRatings WHERE fr.user = '%s'", this.login);
+		query = String.format("SELECT * FROM FeedbackRatings fr WHERE fr.user = '%s'", this.login);
 		try {
 
 			results = stmt.executeQuery(query);
@@ -224,5 +224,13 @@ public class User {
 
 		return result;
 
+	}
+
+	public String userAwards(int m) {
+		throw new NotImplementedException();
+	}
+
+	public String getStatistics(int m) {
+		throw new NotImplementedException();
 	}
 }
