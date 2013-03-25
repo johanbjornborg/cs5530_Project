@@ -71,9 +71,13 @@ public class QueryVideos {
 	}
 
 	/**
+	 * Browses movies based on a hash of key value pairs. The hash keys consist
+	 * of values like Title, cast, director, etc. The values represent the
+	 * actual search string within that category.
 	 * 
 	 * @param attrs
-	 * @return
+	 *            Hashmap of search parameters.
+	 * @return String containing a list of matching movies.
 	 * @throws SQLException
 	 */
 	public String browseTitles(HashMap<String, ArrayList<String>> params, String sortBy) throws SQLException {
@@ -100,10 +104,7 @@ public class QueryVideos {
 			sb.append(String.format("v.genre LIKE '%%%s%%'", s)).append(separator);
 		}
 		sb.delete(sb.lastIndexOf(separator), sb.length() - 1);
-		// TODO: Implement keyword searches.
-		// for (String s : params.get("keyword")) {
-		// query += String.format("v.title LIKE '%s'", s);
-		// }
+
 		try {
 			query = sb.toString();
 			results = stmt.executeQuery(query);

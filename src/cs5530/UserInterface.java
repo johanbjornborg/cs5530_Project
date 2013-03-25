@@ -19,17 +19,6 @@ public class UserInterface {
 		System.out.println("3. Logout/exit:");
 	}
 
-	public static void displayMenu() {
-		System.out.println("        Main Menu		");
-		System.out.println("1. Order Movie(s):");
-		System.out.println("2. See Order History:");
-		System.out.println("3. View/Leave Feedback:");
-		System.out.println("4. User Relationships:");
-		System.out.println("5. User Reports:");
-		System.out.println("6. Logout/exit:");
-
-	}
-
 	public static void main(String[] args) {
 
 		Connector con = null;
@@ -135,7 +124,7 @@ public class UserInterface {
 	 */
 	public static void userMenu(Connector con, Statement stmt, User user) {
 		String choice;
-		int c = 0;
+		int mainMenuChoice = 0;
 		try {
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -151,19 +140,19 @@ public class UserInterface {
 				System.out.println("6. New Stock:");
 				System.out.println("7. Statistics:");
 				System.out.println("8. User Awards:");
-				System.out.println("9. Logout/exit:");
+				System.out.println("9. 2 Degrees Demo:");
 				System.out.println("Note: Typing 'exit' at any time will bring you to back to the parent menu.");
 				while ((choice = in.readLine()) == null && choice.length() == 0)
 					;
 				try {
-					c = Integer.parseInt(choice);
+					mainMenuChoice = Integer.parseInt(choice);
 				} catch (Exception e) {
 
 					continue;
 				}
-				if (c < 1 | c > 6)
+				if (mainMenuChoice < 1 | mainMenuChoice > 9)
 					continue;
-				if (c == 1) {
+				if (mainMenuChoice == 1) {
 
 					String input;
 					int quantity;
@@ -172,7 +161,7 @@ public class UserInterface {
 					while (true) {
 						QueryOrder order = new QueryOrder(con, stmt, user);
 						Date date = new Date();
-						int i;
+						int subMenuChoice;
 						int isbn = -1;
 						System.out.println("1. By ISBN\n2. By Title\n3. Browse Selection\n4. Back to Main Menu");
 						while ((choice = in.readLine()) == null && choice.length() == 0)
@@ -181,16 +170,16 @@ public class UserInterface {
 							if (choice.equals("exit"))
 								break;
 
-							i = Integer.parseInt(choice);
-							if (i < 1 || i > 3) {
+							subMenuChoice = Integer.parseInt(choice);
+							if (subMenuChoice < 1 || subMenuChoice > 3) {
 								continue;
-							} else if (i == 4) {
+							} else if (subMenuChoice == 4) {
 								break;
 							}
 						} catch (Exception e) {
 							continue;
 						}
-						if (i == 1) {
+						if (subMenuChoice == 1) {
 							while (true) {
 								System.out.println("Enter the numeric ISBN:");
 								if (isbn == -1) {
@@ -221,13 +210,14 @@ public class UserInterface {
 										System.out.println("Please enter a nonzero, positive integer.");
 										continue;
 									}
-									order.orderVideos(Integer.toString(isbn), "", quantity, date);
+									System.out.println(order.orderVideos(Integer.toString(isbn), "", quantity, date));
+									System.out.println(order.buyingSuggestions(isbn));
 								} catch (Exception e) {
 									System.out.println("Invalid Quantity. Ensure it is entirely numeric.");
 									continue;
 								}
 							}
-						} else if (i == 2) {
+						} else if (subMenuChoice == 2) {
 							/**
 							 * ORDER BY TITLE
 							 */
@@ -259,13 +249,14 @@ public class UserInterface {
 										System.out.println("Please enter a nonzero, positive integer.");
 										continue;
 									}
-									order.orderVideos("", title, quantity, date);
+									System.out.println(order.orderVideos("", title, quantity, date));
+									System.out.println(order.buyingSuggestions(isbn));
 								} catch (Exception e) {
 									System.out.println("Invalid Quantity. Ensure it is entirely numeric.");
 									continue;
 								}
 							}
-						} else if (i == 3) {
+						} else if (subMenuChoice == 3) {
 							/**
 							 * BROWSE TITLES
 							 */
@@ -358,11 +349,9 @@ public class UserInterface {
 
 							}
 
-						} else {
-
 						}
 					}
-				} else if (c == 2) {
+				} else if (mainMenuChoice == 2) {
 					/**
 					 * ORDER HISTORIES
 					 */
@@ -371,7 +360,7 @@ public class UserInterface {
 					System.out.println("Complete Order History for " + user.fullName + ":");
 					results = order.getOrderHistory();
 					System.out.println(results);
-				} else if (c == 3) {
+				} else if (mainMenuChoice == 3) {
 					/**
 					 * FEEDBACKS
 					 */
@@ -380,7 +369,7 @@ public class UserInterface {
 					String input;
 					String comments = "";
 					int isbn = -1;
-					int i;
+					int subMenuChoice;
 					while (true) {
 						System.out.println("Enter the numeric ISBN:");
 						if (isbn == -1) {
@@ -398,21 +387,21 @@ public class UserInterface {
 								continue;
 							}
 						}
-						System.out.println("1. View Feedback\n2. Leave Feedback\n 3. Back to Main Menu");
+						System.out.println("1. View Feedback\n2. Leave Feedback\n3. Back to Main Menu");
 						while ((choice = in.readLine()) == null && choice.length() == 0)
 							;
 						try {
 							if (choice.equals("exit"))
 								break;
 
-							i = Integer.parseInt(choice);
-							if (i < 1 || i > 3) {
+							subMenuChoice = Integer.parseInt(choice);
+							if (subMenuChoice < 1 || subMenuChoice > 3) {
 								continue;
 							}
 						} catch (Exception e) {
 							continue;
 						}
-						if (i == 1) {
+						if (subMenuChoice == 1) {
 							/**
 							 * VIEW ALL FEEDBACK
 							 */
@@ -421,7 +410,7 @@ public class UserInterface {
 							boolean exit = false;
 							feedback.getFeedback(isbn);
 
-						} else if (i == 2) {
+						} else if (subMenuChoice == 2) {
 							/**
 							 * LEAVE NEW FEEDBACK
 							 */
@@ -472,25 +461,25 @@ public class UserInterface {
 						}
 					}
 					break;
-				} else if (c == 4) {
+				} else if (mainMenuChoice == 4) {
 					/**
 					 * USER RELATIONSHIPS
 					 */
 					System.out.println("User Relationships");
-					System.out.println("1. View\n2. Additional Copies of Existing Movie\n 3. Back to Main Menu");
+					System.out.println("1. View\n2. Additional Copies of Existing Movie\n3. Back to Main Menu");
 
-				} else if (c == 5) {
+				} else if (mainMenuChoice == 5) {
 					/**
 					 * USER REPORTS
 					 */
 					System.out.println("Full User Report for " + user.fullName + ":");
 					System.out.println(user.getUserRecord());
 					break;
-				} else if (c == 6) {
-					System.out.println("1. New Movie\n2. Additional Copies of Existing Movie\n 3. Back to Main Menu");
+				} else if (mainMenuChoice == 6) {
+					System.out.println("1. New Movie\n2. Additional Copies of Existing Movie\n3. Back to Main Menu");
 
 					QueryVideos qv = new QueryVideos(con, stmt);
-					int i;
+					int subMenuChoice;
 					int isbn = -1;
 					int quantity;
 					String input;
@@ -501,14 +490,14 @@ public class UserInterface {
 						if (choice.equals("exit"))
 							break;
 
-						i = Integer.parseInt(choice);
-						if (i < 1 || i > 3) {
+						subMenuChoice = Integer.parseInt(choice);
+						if (subMenuChoice < 1 || subMenuChoice > 3) {
 							continue;
 						}
 					} catch (Exception e) {
 						continue;
 					}
-					if (i == 1) {
+					if (subMenuChoice == 1) {
 						/**
 						 * NEW MOVIE HERE
 						 */
@@ -532,7 +521,7 @@ public class UserInterface {
 							qv.newMovie(attrs);
 						}
 
-					} else if (i == 2) {
+					} else if (subMenuChoice == 2) {
 						/**
 						 * UPDATE MOVIE
 						 */
@@ -574,9 +563,18 @@ public class UserInterface {
 					} else {
 						break;
 					}
-				} else {
+
+				} else if (mainMenuChoice == 7) {
 					System.out.println("Function TBD.");
-					break;
+
+				} else if (mainMenuChoice == 8) {
+					System.out.println("Function TBD.");
+
+				} else if (mainMenuChoice == 9) {
+					System.out.println("2 Degrees Demo.\n For the purpose of the assignment, John Goodman (O Brother Where Art Thou) will be compared to Brad Pitt (Oceans Eleven).\n Both of them share a connection through George Clooney.");
+					CastAndCrew cc = new CastAndCrew();
+					System.out.println(cc.twoDegrees("John Goodman", "Brad Pitt"));
+
 				}
 			}
 		} catch (Exception e) {

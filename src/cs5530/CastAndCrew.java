@@ -35,7 +35,9 @@ public class CastAndCrew {
 	 */
 	public String twoDegrees(String actorA, String actorB) {
 		String query = String
-				.format("SELECT * From CastAndCrew Z WHERE Z.id IN (SELECT X.id AS user FROM CastLookup AS X INNER JOIN CastLookup AS Y ON X.id = Y.id GROUP BY user) AND Z.full_name = '%s' OR Z.full_name = '%s'");
+				.format("SELECT * From CastAndCrew Z WHERE Z.id IN " +
+						"(SELECT X.id AS movie FROM CastLookup AS X INNER JOIN CastLookup AS Y ON X.id = Y.id GROUP BY movie)" +
+						" AND Z.full_name = '%s' OR Z.full_name = '%s'", actorA, actorB);
 		throw new NotImplementedException();
 	}
 
