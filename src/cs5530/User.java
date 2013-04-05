@@ -5,9 +5,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 
-import com.mysql.jdbc.Connection;
-
-import sun.org.mozilla.javascript.internal.xml.XMLLib.Factory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class User {

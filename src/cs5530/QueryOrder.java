@@ -90,7 +90,7 @@ public class QueryOrder {
 			// if (Variables.getStatement().executeUpdate(query) == 1) {
 
 			stmt.executeUpdate(query);
-			result = "Successfully Ordered Video " + title + ".";
+			result = "Successfully Ordered Video " + title + ".\n" + buyingSuggestions(Integer.parseInt(isbn));
 
 		} catch (SQLException e) {
 			System.err.println("Order: OrderVideos: Unable to execute query:" + query + "\n");
@@ -136,7 +136,7 @@ public class QueryOrder {
 	 */
 	public String buyingSuggestions(int isbn) throws SQLException {
 		ResultSet results;
-		String resultStr = "";
+		String resultStr = "People also bought: \n";
 		String query = String.format("SELECT * FROM VideoData v " + "WHERE v.isbn = (SELECT OH1.isbn FROM OrderHistory OH1 WHERE OH1.isbn IN "
 				+ "(SELECT OH.isbn FROM OrderHistory OH WHERE OH.userLogin = '%s' AND OH.isbn = '%s') AND OH1.userLogin <> '%s') LIMIT 10", isbn, user.login, user.login);
 

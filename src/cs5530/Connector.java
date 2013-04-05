@@ -97,6 +97,9 @@ public class Connector {
 		connectionPool.addElement(connection);
 	}
 
+	public void closeStatement() throws Exception {
+		stmt.close();
+	}
 	public void closeConnection() throws Exception {
 		con.close();
 	}
