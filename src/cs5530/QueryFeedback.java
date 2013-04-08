@@ -100,7 +100,7 @@ public class QueryFeedback {
 		return resultstr;
 	}
 
-	public String rateFeedback(int id, int score) throws SQLException {
+	public String rateFeedback(int id, int score) {
 		System.out.println("Rate Feedback: ");
 		String query = "";
 		String result = "Failed to Rate Feedback";
@@ -119,7 +119,7 @@ public class QueryFeedback {
 		} catch (SQLException e) {
 			System.err.println("Feedback: RateFeedback: Unable to execute query:" + query + "\n");
 			System.err.println(e.getMessage());
-			throw (e);
+			return "<br>Feedback: RateFeedback: Unable to execute query:" + query + "<br>Check to ensure that the feedback ID is valid.";
 		}
 		System.out.println("Feedback:RateFeedback query=" + query + "\n");
 		System.out.println(result);

@@ -80,7 +80,7 @@ public class QueryOrder {
 		// If so, order the movie(s)
 		if (!results.next()) {
 			System.out.println("Results empty. Likely that quantity desired is invalid");
-			return result;
+			return "Results empty. Likely that quantity desired is invalid";
 		}
 		while (results.next()) {
 			isbn = results.getString("isbn");
@@ -90,7 +90,7 @@ public class QueryOrder {
 			// if (Variables.getStatement().executeUpdate(query) == 1) {
 
 			stmt.executeUpdate(query);
-			result = "Successfully Ordered Video " + title + ".\n" + buyingSuggestions(Integer.parseInt(isbn));
+			result = "<br>Successfully Ordered Video " + title + "<br><b> Customers who bought ISBN: "+ isbn + " also bought: </b><br>" + buyingSuggestions(Integer.parseInt(isbn));
 
 		} catch (SQLException e) {
 			System.err.println("Order: OrderVideos: Unable to execute query:" + query + "\n");
@@ -137,8 +137,8 @@ public class QueryOrder {
 	public String buyingSuggestions(int isbn) throws SQLException {
 		ResultSet results;
 		String resultStr = "People also bought: \n";
-		String query = String.format("SELECT * FROM VideoData v " + "WHERE v.isbn = (SELECT OH1.isbn FROM OrderHistory OH1 WHERE OH1.isbn IN "
-				+ "(SELECT OH.isbn FROM OrderHistory OH WHERE OH.userLogin = '%s' AND OH.isbn = '%s') AND OH1.userLogin <> '%s') LIMIT 10", isbn, user.login, user.login);
+		String query = String.format("SELECT * FROM VideoData v WHERE v.isbn IN (SELECT OH1.isbn FROM OrderHistory OH1 WHERE EXISTS "
+				+ "(SELECT OH.isbn FROM OrderHistory OH WHERE OH.isbn = '%s') AND OH1.isbn <> '%s' group by OH1.isbn) LIMIT 10", isbn, isbn);
 
 		try {
 			results = stmt.executeQuery(query);

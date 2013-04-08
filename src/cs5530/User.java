@@ -61,7 +61,7 @@ public class User {
 	public String getUserRecord() throws Exception {
 
 		String query = "";
-		String resultStr = "<b>USER REPORT</b><br>";
+		String resultStr = "<b>USER REPORT</b><br><br> Basic Information:<br>";
 		ResultSet results;
 
 		// Get all personal info
@@ -72,8 +72,8 @@ public class User {
 			results = stmt.executeQuery(query);
 			while (results.next()) {
 				// Check column names for correctness.
-				resultStr += "<b> Login: " + results.getString("Login") + " Name: " + results.getString("Full_name") + " <br>Address: &nbsp'<i>" + results.getString("Address")
-						+ " <br>Phone: &nbsp'<i>" + results.getString("Phone") + " <br>Credit Card: &nbsp'<i>" + results.getString("Card_id") + "'</i><BR>\n";
+				resultStr += "Login: " + results.getString("Login") + " Name: " + results.getString("Full_name") + " <br>Address: &nbsp'" + results.getString("Address")
+						+ " <br>Phone: &nbsp'" + results.getString("Phone") + " <br>Credit Card: &nbsp'" + results.getString("Card_id") + "'<BR>";
 
 			}
 
@@ -86,15 +86,15 @@ public class User {
 		// Get all orders (movie name, copies ordered, date)
 		// Select all from order history where user = user and select movie name
 		// where order.isbn = movie.isbn
-		resultStr += "<b>Order History</b><br>";
+		resultStr += "<br><b>Order History:</b><br>";
 		query = String.format("SELECT * FROM OrderHistory o NATURAL JOIN VideoData v WHERE o.userLogin = '%s' AND o.isbn = v.isbn", this.login);
 		try {
 
 			results = stmt.executeQuery(query);
 			while (results.next()) {
 				// Check column names for correctness.
-				resultStr += " ISBN: " + results.getString("isbn") + " <br>Order Date: &nbsp'<i>" + results.getString("Rent_date") + "Additional Info: "
-						+ results.getString("Additional_info") + "'</i><BR>\n";
+				resultStr += "<br> ISBN: " + results.getString("isbn") + " <br>Order Date: &nbsp'" + results.getString("Rent_date") + "<br>Additional Info:<br> "
+						+ results.getString("Additional_info") + "<BR>";
 
 			}
 
@@ -106,15 +106,15 @@ public class User {
 		}
 		// Get all feedback left
 		// Select all from feedback where user = user.
-		resultStr += "<b>Feedback left:</b><br>";
+		resultStr += "<br><b>Feedback left:</b><br>";
 		query = String.format("SELECT * FROM Feedback WHERE commenterLogin = '%s'", this.login);
 		try {
 
 			results = stmt.executeQuery(query);
 			while (results.next()) {
 				// Check column names for correctness.
-				resultStr += results.getString("commenterLogin") + " Score: " + results.getString("Score") + " <br>Comments: &nbsp'<i>" + results.getString("Short_Text")
-						+ "'</i><BR>\n";
+				resultStr += "<br>" + results.getString("commenterLogin") + "<br> Score: " + results.getString("Score") + " <br>Comments: &nbsp'" + results.getString("Short_Text")
+						+ "'<BR>\n";
 
 			}
 
@@ -126,7 +126,7 @@ public class User {
 		}
 		// Get all feedback rated
 		// select all feedback where ... crap.
-		resultStr += "<b>Feedback rated by User:</b><br>";
+		resultStr += "<br><b>Feedback rated by User:</b><br>";
 		query = String.format("SELECT * FROM FeedbackRatings fr WHERE fr.user = '%s'", this.login);
 		try {
 
@@ -145,14 +145,14 @@ public class User {
 		}
 
 		// Get all trusted users, incl. date trusted.
-		resultStr += "<b>Other users trusted by User:</b><br>";
+		resultStr += "<br><b>Other users trusted by User:</b><br>";
 		query = String.format("SELECT * FROM Trusts WHERE Truster = '%s'", this.login);
 		try {
 
 			results = stmt.executeQuery(query);
 			while (results.next()) {
 				// Check column names for correctness.
-				resultStr += "Trustee (User trusts this person)" + results.getString("Trustee") + " isTrusted (0|1): " + results.getString("date_trusted") + "'</i><BR>\n";
+				resultStr += "<br>Trustee (User trusts this person)" + results.getString("Trustee") + " <br>isTrusted (0|1): " + results.getString("date_trusted") + "'</i><BR>\n";
 			}
 
 		} catch (SQLException e) {
@@ -202,7 +202,7 @@ public class User {
 	}
 
 	public String trustRelationship(String trustee, int isTrusted) throws SQLException {
-		Date date = new Date();
+		java.sql.Date date = new java.sql.Date(new Date().getTime());
 		System.out.println("Trust User: ");
 		String query = "";
 		String result = "Failed to Leave Feedback";

@@ -23,11 +23,12 @@ if(user == null){
 } else {
 %>
 <BR><a href="orders.jsp"> Order a Movie </a></p>
+<BR><a href="browse.jsp"> Browse Movies </a></p>
 <BR><a href="orderHistory.jsp"> See Order History </a></p>
 <BR><a href="feedback.jsp"> View/Leave Feedback </a></p>
-<BR><a href="relationships.jsp"> Order a Movie </a></p>
-<BR><a href="reports.jsp"> User Relationships </a></p>
-<BR><a href="twodegrees.jsp"> Two degrees of awesome</a></p>
+<BR><a href="relationships.jsp"> User Relationships </a></p>
+<BR><a href="reports.jsp"> User Report </a></p>
+<BR><a href="twodegrees.jsp"> Two Degrees</a></p>
 
 <%
 }  // We are ending the braces for else here

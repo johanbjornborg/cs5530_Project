@@ -3,6 +3,7 @@ package cs5530;
 import java.lang.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.io.*;
@@ -572,7 +573,7 @@ public class UserInterface {
 
 				} else if (mainMenuChoice == 9) {
 					System.out.println("2 Degrees Demo.\n For the purpose of the assignment, John Goodman (O Brother Where Art Thou) will be compared to Brad Pitt (Oceans Eleven).\n Both of them share a connection through George Clooney.");
-					CastAndCrew cc = new CastAndCrew();
+					CastAndCrew cc = new CastAndCrew(con, con.stmt);
 					System.out.println(cc.twoDegrees("John Goodman", "Brad Pitt"));
 
 				}

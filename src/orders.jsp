@@ -48,9 +48,8 @@ if( searchAttribute == null ){
 		String isbnValue = request.getParameter("isbnValue");
 		String qty = request.getParameter("qty");
 		cs5530.Connector connector = new Connector();
-		cs5530.User user = new User(connector, connector.stmt);
-		user.loginUser("jwells","qwerty");
-        cs5530.QueryOrder order = new QueryOrder(connector, connector.stmt, user);
+		cs5530.User user = (cs5530.User) session.getAttribute("user");
+		cs5530.QueryOrder order = new QueryOrder(connector, connector.stmt, user);
 
 %>
 

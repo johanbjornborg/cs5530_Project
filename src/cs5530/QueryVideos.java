@@ -104,12 +104,13 @@ public class QueryVideos {
 			sb.append(String.format("v.genre LIKE '%%%s%%'", s)).append(separator);
 		}
 		sb.delete(sb.lastIndexOf(separator), sb.length() - 1);
-
+		
 		try {
 			query = sb.toString();
+			resultStr += query + "<br>";
 			results = stmt.executeQuery(query);
 			while (results.next()) {
-				resultStr += "<b>" + results.getString("isbn") + "</b><br>Title: " + results.getString("title") + " Release Year: " + results.getString("release_year")
+				resultStr += "<br><b>" + results.getString("isbn") + "</b><br>Title: " + results.getString("title") + " Release Year: " + results.getString("release_year")
 						+ " <br>Formats: &nbsp'<i>" + results.getString("format") + "'</i><BR>\n" + " <br>Price: &nbsp'<i>" + results.getString("price") + "'</i><BR>\n"
 						+ " <br>Genre: &nbsp'<i>" + results.getString("genre") + "'</i><BR>\n";
 			}
